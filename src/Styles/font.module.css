@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Rock+Salt&display=swap');
+
+.rock {
+    font-family: 'Rock Salt', cursive;
+    background-image: url(https://toppng.com/uploads/thumbnail/tear-clipart-torn-piece-paper-torn-paper-edges-11562867565lp2ktdxfjy.png);
+    background-size: 100% 100%;
+    color: black;
+    filter: drop-shadow(black -1px 1px 2px);
+}
+
+.typeContainer {
+  display: flex;
+  justify-content: left;
+}
+
+.typewriter p {
+  color: #fff;
+  font-family: monospace;
+  overflow: hidden; 
+  border-right: .15em solid orange; 
+  white-space: nowrap; 
+  margin: 0 auto; 
+  letter-spacing: .15em;
+  animation: 
+    typing 3.5s steps(30, end),
+    blink-caret .5s step-end infinite;
+  filter: blur(1px);
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange }
+}
+
+.buzz_wrapper span{
+    -webkit-filter: blur(1px);
+    font-family:'Courier new', fixed;
+    font-weight:bold;
+    font-size: 2rem;
+  }
+  .buzz_wrapper span:nth-child(1){
+    color:white;
+    margin-left:-2px;
+    -webkit-filter: blur(2px);  
+  }
+  .buzz_wrapper span:nth-child(2){
+    color:green;
+    margin-left:2px;
+    -webkit-filter: blur(2px);
+  }
+  .buzz_wrapper span:nth-child(3){
+    color:blue;
+    position:20px 0;
+    -webkit-filter: blur(1px);
+  }
+  .buzz_wrapper span:nth-child(4){
+    color:#fff;
+    -webkit-filter: blur(1px);
+    text-shadow:0 0 50px rgba(255,255,255,0.4);
+  }
+  .buzz_wrapper span:nth-child(5){
+    color:rgba(255,255,255,0.4);
+    -webkit-filter: blur(15px);
+  }
+   
+  @-webkit-keyframes blur {
+    0%   { -webkit-filter: blur(1px); opacity:0.8;}
+    50% { -webkit-filter: blur(1px); opacity:1; }
+    100%{ -webkit-filter: blur(1px); opacity:0.8; }
+  }
+  @-webkit-keyframes jerk {
+    50% { left:1px; }
+    51% { left:0; }
+  }
+  @-webkit-keyframes jerkup {
+    50% { top:1px; }
+    51% { top:0; }
+  }
+  
+  .buzz_wrapper span:nth-child(3){
+    -webkit-animation: jerkblue 1s infinite;
+  }
+  @-webkit-keyframes jerkblue {
+    0% { left:0; }
+    30% { left:0; }
+    31% { left:10px; }
+    32% { left:0; }
+    98% { left:0; }
+    100% { left:10px; }
+  }
+  .buzz_wrapper span:nth-child(2){
+    -webkit-animation: jerkgreen 1s infinite;
+  }
+  @-webkit-keyframes jerkgreen {
+    0% { left:0; }
+    30% { left:0; }
+    31% { left:-10px; }
+    32% { left:0; }
+    98% { left:0; }
+    100% { left:-10px; }
+  }
+  
+  .buzz_wrapper .text{
+    -webkit-animation: jerkwhole 5s infinite;
+    position:relative;
+  }
+  @-webkit-keyframes jerkwhole {
+    30% {  }
+    40% { opacity:1; top:0; left:0;  -webkit-transform:scale(1,1);  -webkit-transform:skew(0,0);}
+    41% { opacity:0.8; top:0px; left:-100px; -webkit-transform:scale(1,1.2);  -webkit-transform:skew(50deg,0);}
+    42% { opacity:0.8; top:0px; left:100px; -webkit-transform:scale(1,1.2);  -webkit-transform:skew(-80deg,0);}
+    43% { opacity:1; top:0; left:0; -webkit-transform:scale(1,1);  -webkit-transform:skew(0,0);}
+    65% { }
+  }

@@ -1,0 +1,196 @@
+import React, { useEffect, useState } from "react";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import GameItem from "../components/GameItem";
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import Genres from "../components/Genres";
+import Platform from "../components/Platform"
+import styles from '../Styles/font.module.css';
+import style from '../Styles/cards.module.css';
+
+export async function getGenres() {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}genres?key=${import.meta.env.VITE_API_KEY}`
+  );
+  const json = await response.json();
+  return json.results;
+}
+
+export async function getPlatforms() {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}platforms?key=${import.meta.env.VITE_API_KEY}`
+  );
+  const json = await response.json();
+  return json.results;
+}
+
+export async function preLoadFilters() {
+  const genres = await getGenres();
+  const platforms = await getPlatforms();
+
+  return {
+    genres,
+    platforms,
+  };
+}
+
+export default function Home() {
+  const [games, setGames] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [platforms, setPlatformgames] = useState([]);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState(1);
+  const [search, setSearch] = useState('');
+  const [state, setState] = useState({
+    filtra: false,
+  });
+
+  const handleSearch = (event) => {
+    setSearch(event.currentTarget.value);
+  };
+
+  const handlePaginationChange = (event, value) => {
+    setPagination(value);
+  };
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        <Genres genres={genres} />
+      </List>
+      <Divider />
+      <List>
+        <Platform platforms={platforms}/>
+      </List>
+
+    </Box>
+  );
+
+  async function getAPI() {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}games?key=${import.meta.env.VITE_API_KEY}&page=${pagination}&page_size=20&search=${search}`);
+      const json = await response.json();
+      console.log('Data from API:', json);
+      if (response.ok) {
+        setGames(json.results);
+      } else {
+        setError('Riprova');
+      }
+    } catch (error) {
+      setError('Riprova con un\'altra URL', error.message);
+    }
+
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    setGames([]);
+    setError('');
+    setLoading(true);
+
+    const fetchData = async () => {
+      try {
+        const genresData = await getGenres();
+        const platformGame = await getPlatforms();
+        setGenres(genresData);
+        setPlatformgames(platformGame);
+        const timeOutApi = setTimeout(() => {
+          getAPI();
+        }, 1500);
+
+        return () => {
+          clearTimeout(timeOutApi);
+        };
+      } catch (error) {
+        setError('Riprova con un\'altra URL', error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+  }, [search, pagination]);
+
+  return (
+    <div style={{ width: '100%' }}>
+      <div>
+      <div className={styles.buzz_wrapper}>
+        <div className={styles.text}>
+          <span >Nuovi e di tendenza</span>
+        </div>
+      </div>
+
+      <div className={styles.typeContainer}>
+        <div className={styles.typewriter}>
+          <p >Dati basati dagli utenti e dalla data di pubblicazione</p>
+        </div>
+      </div>
+
+        <TextField id="outlined-basic" label="Cerca il tuo gioco..." variant="outlined" onChange={handleSearch} style={{width: '100%', filter: 'drop-shadow(0 -1mm 1mm white) blur (0.5px)'}}/>
+        <div style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(1px)', }}>
+          {['left'].map((anchor) => {
+            return (
+              <React.Fragment key={anchor}>
+                <Button onClick={toggleDrawer(anchor, true)} className={style.buttonGlitch}>FILTRA</Button>
+                <SwipeableDrawer
+                  anchor={anchor}
+                  open={state[anchor]}
+                  onClose={toggleDrawer(anchor, false)}
+                  onOpen={toggleDrawer(anchor, true)}
+                >
+                  {list(anchor)}
+                </SwipeableDrawer>
+              </React.Fragment>
+            );
+          })}
+        
+          {search}
+          <Stack spacing={2}>
+            <Pagination
+              count={10}
+              variant="outlined"
+              page={pagination}
+              onChange={handlePaginationChange}
+            />
+          </Stack>
+        </div>
+      </div>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {loading && <progress />}
+
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '30px',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        {games && games.map((game) => <GameItem key={game.id} game={game} />)}
+      </div>
+    </div>
+  );
+}
