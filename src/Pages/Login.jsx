@@ -30,25 +30,6 @@ function Login() {
     }
   };
 
-  const handleLoginWithDiscord = async () => {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'discord',
-        options: {
-          redirectTo: 'http://localhost:5173/settings',
-        },
-      });
-      console.log(data, error);
-      // if (error) {
-      //   alert(error.error_description || error.message)
-      // } else {
-      //   navigate('/settings')
-      // }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="container" style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(1px)', }}>
       <div >
@@ -83,21 +64,7 @@ function Login() {
             </button>
           </form>
         </div>
-        <div id="LoginOAuth" >
-        <p className={styles.typewriter}>Puoi fare login con Social auth</p>
-          <button type="button" className="secondary">
-            Login con Google
-            
-          </button>
-          <button
-            type="button"
-            className="contrast"
-            onClick={handleLoginWithDiscord}
-          >
-            Login con Discord
-            
-          </button>
-        </div>
+
       </div>
     </div>
   );

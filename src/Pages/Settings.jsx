@@ -1,66 +1,62 @@
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import supabase from '../supabase/client';
 import AppContext from '../contexts/AppContext';
 import Avatar from '../components/Avatar';
 
 export default function Settings() {
-    const { session } = useContext(AppContext);
-    const [loading, setLoading] = useState(true);
-    const [username, setUsername] = useState(null);
-    const [first_name, setfirstName] = useState(null);
-    const [last_name, setLastName] = useState(null);
-    const [avatar_url, setAvatarUrl] = useState(null);
-  
-    useEffect(() => {
-      let ignore = false;
-  
-      async function getProfile() {
-        try {
-          setLoading(true);
-  
-          console.log('Session before check:', session);
-  
-          // Verifica se session è definito e contiene la proprietà user
-          if (!session || !session.user) {
-            console.error('Session or session.user is undefined');
-            throw new Error('Session or session.user is undefined');
-          }
-  
-          console.log('Session after check:', session);
-          const { user } = session;
-  
-          console.log('User:', user);
-  
-          const { data, error } = await supabase
-            .from('profiles')
-            .select(`username, first_name, last_name, avatar_url`)
-            .eq('id', user.id)
-            .single();
-  
-          if (!ignore) {
-            if (error) {
-              console.warn(error);
-            } else if (data) {
-              setUsername(data.username);
-              setfirstName(data.first_name);
-              setLastName(data.last_name);
-              setAvatarUrl(data.avatar_url);
-            }
-          }
-  
-          setLoading(false);
-        } catch (error) {
-          console.error(error.message);
-          setLoading(false);
+  const { session } = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState(null);
+  const [first_name, setfirstName] = useState(null);
+  const [last_name, setLastName] = useState(null);
+  const [avatar_url, setAvatarUrl] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function getProfile() {
+      try {
+        setLoading(true);
+
+        if (!session || !session.user) {
+          console.error('Session or session.user is undefined');
+          throw new Error('Session or session.user is undefined');
         }
+
+        const { user } = session;
+
+        const { data, error } = await supabase
+          .from('profiles')
+          .select(`username, first_name, last_name, avatar_url`)
+          .eq('id', user.id)
+          .single();
+
+        if (!ignore) {
+          if (error) {
+            console.warn(error);
+          } else if (data) {
+            setUsername(data.username);
+            setfirstName(data.first_name);
+            setLastName(data.last_name);
+            setAvatarUrl(data.avatar_url);
+          }
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error(error.message);
+        setLoading(false);
       }
-  
-      getProfile();
-  
-      return () => {
-        ignore = true;
-      };
-    }, [session]);
+    }
+
+    getProfile();
+
+    return () => {
+      ignore = true;
+    };
+  }, [session]);
 
   async function updateProfile(event, avatarUrl) {
     event.preventDefault();
@@ -80,19 +76,18 @@ export default function Settings() {
     const { error } = await supabase.from('profiles').upsert(updates);
 
     if (error) {
-      // eslint-disable-next-line no-alert
       alert(error.message);
     } else {
       setAvatarUrl(avatarUrl);
+      // Navigate to '/account' after successful update
+      navigate('/account');
     }
+
     setLoading(false);
   }
 
   return (
-    <form
-      onSubmit={updateProfile}
-      className={` form-widget`}
-    >
+    <form onSubmit={(e) => updateProfile(e, avatar_url)} className={`form-widget`}>
       <Avatar
         url={avatar_url}
         size={150}

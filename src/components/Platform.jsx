@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import font from '../Styles/font.module.css';
 
 export default function Platform({ platforms }) {
   return (
     <div>
-      <p>Lista delle piattaforme generi</p>
+      <p className={font.rock}>Lista delle piattaforme</p>
 
       <ul>
       {Array.isArray(platforms) &&

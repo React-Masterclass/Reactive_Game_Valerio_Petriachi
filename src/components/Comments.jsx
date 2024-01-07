@@ -32,7 +32,7 @@ function Comments({ game }) {
                 <p>{comment.comment_content}</p>
                 <div >
                   <p >
-                    Published by: {comment.profile.username}
+                    Publicato da: {comment.profile.username}
                   </p>
                   <p >
                     {formatMessageDate(comment.created_at)}

@@ -3,8 +3,8 @@ import useProfile from '../hooks/useProfile';
 import getProfileImg from '../utils/getProfileImg';
 import formatMessageDate from '../utils/formatMessageDate';
 import supabase from '../supabase/client';
-import style from '../styles/gamePage.module.css';
 import AppContext from '../contexts/AppContext';
+import font from '../Styles/font.module.css'
 
 function Account() {
   const { session } = useContext(AppContext);
@@ -46,29 +46,39 @@ function Account() {
   return (
     <div className="container">
       {loading && <progress />}
-      <img
-        src={profile && getProfileImg(profile.avatar_url)}
-        alt="profile"
-        width={200}
-      />
-      <h1>
-        Benvenuto
-        {profile && (profile.usename || session.user.user_metadata.full_name)}
-      </h1>
+
+      <div >
+                <div                  
+                  style={{
+                    backgroundImage: `url('${
+                      profile && getProfileImg(profile.avatar_url)
+                    }')`,
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                  }}
+                />
+      </div>
+
+
+      <div className={font.buzz_wrapper}>
+        <div className={font.text}>
+          <span >Benvenuto </span>
+        </div>
+      </div>
       <div>
         <details>
           <summary>Le tue Reviews</summary>
           {comments.map((c) => (
             <div key={c.id}>
-              <div className={style.comment_container}>
+              <div >
                 <article>
-                  <p className={style.comment_title}>{c.comment_title}</p>
+                  <p >{c.comment_title}</p>
                   <p>{c.comment_content}</p>
-                  <div className={style.comment_details}>
-                    <p className={style.detail}>
+                  <div >
+                    <p >
                       Published by: {c.profile.username}
                     </p>
-                    <p className={style.detail}>
+                    <p >
                       {formatMessageDate(c.created_at)}
                     </p>
                   </div>

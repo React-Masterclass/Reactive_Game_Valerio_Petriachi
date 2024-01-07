@@ -5,11 +5,10 @@ import Stack from '@mui/material/Stack';
 import GameItem from "../components/GameItem";
 import styles from '../Styles/font.module.css';
 import Pagination from '@mui/material/Pagination';
-import { getPublishers } from "./Home";
 
-export default function PlatformPage() {
-  const { platform, platform_id } = useParams();
-  const [platformGames, setPlatformGames] = useState([]);
+export default function PublisherPage() {
+  const {publisher } = useParams();
+  const [publisherGames, setPublisher] = useState([]);
   const [pagination, setPagination] = useState(1);
 
   const handlePaginationChange = (event, value) => {
@@ -18,18 +17,16 @@ export default function PlatformPage() {
 
   useEffect(() => {
 
-    async function getPlatform() {
+    async function getPublisher() {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}games?key=${import.meta.env.VITE_API_KEY}&page=${pagination}&platforms=${platform_id}`
+          `${import.meta.env.VITE_BASE_URL}games?key=${import.meta.env.VITE_API_KEY}&page=${pagination}&publishers=${publisher}`
         );
-
         
-
         if (response.ok) {
           const json = await response.json();
           console.log('Data from API:', json);
-          setPlatformGames(json.results);
+          setPublisher(json.results);
 
           console.log(json);
         } else {
@@ -41,8 +38,8 @@ export default function PlatformPage() {
         setError('Ops, pagina non trovata', error.message);
       }
     }
-    getPublishers();
-  }, [platform, pagination]);
+    getPublisher();
+  }, [publisher, pagination]);
 
 
   return (
@@ -50,13 +47,13 @@ export default function PlatformPage() {
       <div>
       <div className={styles.buzz_wrapper}>
           <div className={styles.text}>
-            <span >{platform} games</span>
+            <span >{publisher} games</span>
           </div>
         </div>
 
       <div className={styles.typeContainer}>
         <div className={styles.typewriter}>
-          <p>Hai una {platform} ? Scegli tra questi giochi</p>
+          <p>Amante della {publisher}, scegli tra questi giochi</p>
         </div>
       </div>
 
@@ -77,7 +74,7 @@ export default function PlatformPage() {
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-        {platformGames && platformGames.map((game) => <GameItem key={game.id} game={game} />)}
+        {publisherGames && publisherGames.map((game) => <GameItem key={game.id} game={game} />)}
       </div>
     </div>
   );

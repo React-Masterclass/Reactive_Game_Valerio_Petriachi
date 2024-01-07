@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import font from '../Styles/font.module.css';
 
 export default function Genres({ genres }) {
   return (
     <div>
-      <p>Lista dei generi</p>
+      <p className={font.rock}>Lista dei generi</p>
       <ul>
         {Array.isArray(genres) &&
           genres.map((genre) => (

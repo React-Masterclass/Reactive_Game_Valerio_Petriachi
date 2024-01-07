@@ -30,8 +30,13 @@ html {
 
 body {
 	background: linear-gradient(black, darkgreen);
+	overflow-x: hidden;
 }
 
 a {
 	color: black !important;
+}
+
+.iconAbout {
+	width: 100px;
 }

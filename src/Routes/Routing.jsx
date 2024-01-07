@@ -4,12 +4,16 @@ import About from '../Pages/About';
 import HomeAdmin from '../Pages/HomeAdmin';
 import Home from '../Pages/Home';
 import { preLoadFilters } from '../Pages/Home';
+import ProtectedRoute from '../components/ProtectedRoute';
 import GenrePage from '../Pages/GenrePage';
+import PublisherPage from '../Pages/PublisherPage';
 import PlatformPage from '../Pages/PlatformPage';
 import GamePage, { getSingleGame } from '../Pages/GamePage';
 import Login from '../Pages/Login';
+import CommentPage from '../pages/CommentPage';
 import Register from '../Pages/Register';
 import Settings from '../Pages/Settings';
+import Account from '../Pages/Account';
 
 export const router = createBrowserRouter([
     {
@@ -38,12 +42,31 @@ export const router = createBrowserRouter([
           element: <GenrePage />
         },
         {
-          path: '/settings',
-          element: <Settings />,
+          path: '/games/publishers/:publisher',
+          element: <PublisherPage />
+        },
+        {
+          path: '/',
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: '/account',
+              element: <Account />,
+            },
+            {
+              path: '/settings',
+              element: <Settings />,
+            },
+          ],
         },
         {
           path: '/game/:id',
           element: <GamePage />,
+          loader: getSingleGame,
+        },
+        {
+          path: '/game/:id/comment',
+          element: <CommentPage />,
           loader: getSingleGame,
         },
         {

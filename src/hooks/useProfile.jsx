@@ -10,21 +10,26 @@ function useProfile() {
 
   useEffect(() => {
     let ignore = false;
+
     async function getProfile() {
       setLoading(true);
-      const { user } = session;
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select(`*, favorites: favorites(*)`)
-        .eq('id', user.id)
-        .single();
+      // Check if session is not null or undefined before destructuring
+      if (session && session.user) {
+        const { user } = session;
 
-      if (!ignore) {
-        if (error) {
-          console.warn(error);
-        } else if (data) {
-          setProfile(data);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select(`*, favorites: favorites(*)`)
+          .eq('id', user.id)
+          .single();
+
+        if (!ignore) {
+          if (error) {
+            console.warn(error);
+          } else if (data) {
+            setProfile(data);
+          }
         }
       }
 

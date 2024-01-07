@@ -13,6 +13,10 @@
   justify-content: left;
 }
 
+.scrollLeft {
+  animation: scroll-left 20s linear infinite;
+}
+
 .typewriter p {
   color: #fff;
   font-family: monospace;
@@ -84,6 +88,11 @@
     51% { top:0; }
   }
   
+  @keyframes scroll-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
   .buzz_wrapper span:nth-child(3){
     -webkit-animation: jerkblue 1s infinite;
   }
@@ -108,7 +117,7 @@
   }
   
   .buzz_wrapper .text{
-    -webkit-animation: jerkwhole 5s infinite;
+    -webkit-animation: jerkwhole 4s infinite;
     position:relative;
   }
   @-webkit-keyframes jerkwhole {
@@ -119,3 +128,5 @@
     43% { opacity:1; top:0; left:0; -webkit-transform:scale(1,1);  -webkit-transform:skew(0,0);}
     65% { }
   }
+
+  

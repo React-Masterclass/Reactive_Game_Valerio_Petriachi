@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import Genres from "../components/Genres";
+import Publisher from "../components/Publisher";
 import Platform from "../components/Platform"
 import styles from '../Styles/font.module.css';
 import style from '../Styles/cards.module.css';
@@ -26,23 +27,38 @@ export async function getPlatforms() {
     `${import.meta.env.VITE_BASE_URL}platforms?key=${import.meta.env.VITE_API_KEY}`
   );
   const json = await response.json();
+  console.log('Piattaforme API:', json);
+  return json.results;
+}
+
+export async function getPublishers() {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}publishers?key=${import.meta.env.VITE_API_KEY}`
+  );
+  const json = await response.json();
+  console.log('Produttori API:', json);
   return json.results;
 }
 
 export async function preLoadFilters() {
   const genres = await getGenres();
   const platforms = await getPlatforms();
+  const publishers = await getPublishers();
 
   return {
     genres,
     platforms,
+    publishers,
   };
 }
+
+
 
 export default function Home() {
   const [games, setGames] = useState([]);
   const [genres, setGenres] = useState([]);
   const [platforms, setPlatformgames] = useState([]);
+  const [publishers, setPublisherGames] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(1);
@@ -85,7 +101,10 @@ export default function Home() {
       <List>
         <Platform platforms={platforms}/>
       </List>
-
+      <Divider />
+      <List>
+        <Publisher publishers={publishers}/>
+      </List>
     </Box>
   );
 
@@ -93,7 +112,7 @@ export default function Home() {
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}games?key=${import.meta.env.VITE_API_KEY}&page=${pagination}&page_size=20&search=${search}`);
       const json = await response.json();
-      console.log('Data from API:', json);
+      
       if (response.ok) {
         setGames(json.results);
       } else {
@@ -115,8 +134,10 @@ export default function Home() {
       try {
         const genresData = await getGenres();
         const platformGame = await getPlatforms();
+        const publisherGame = await getPublishers();
         setGenres(genresData);
         setPlatformgames(platformGame);
+        setPublisherGames(publisherGame);
         const timeOutApi = setTimeout(() => {
           getAPI();
         }, 1500);
@@ -168,9 +189,9 @@ export default function Home() {
           })}
         
           {search}
-          <Stack spacing={2}>
+          <Stack spacing={2} style={{alignItems: 'center'}}>
             <Pagination
-              count={10}
+              count={20}
               variant="outlined"
               page={pagination}
               onChange={handlePaginationChange}
@@ -185,7 +206,7 @@ export default function Home() {
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: '30px',
+        gap: '40px',
         justifyContent: 'center',
         alignItems: 'center'
       }}>

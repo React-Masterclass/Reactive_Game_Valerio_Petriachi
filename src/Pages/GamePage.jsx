@@ -49,7 +49,6 @@ function GamePage() {
       ])
       .select();
     if (error) {
-      // eslint-disable-next-line no-alert
       alert(error.message);
     } else {
       getFavGame();
@@ -63,13 +62,42 @@ function GamePage() {
       .eq('game_id', game.id)
       .eq('profile_id', session.user.id);
     if (error) {
-      // eslint-disable-next-line no-alert
       alert(error.message);
     } else {
       getFavGame();
     }
   };
 
+  const handleMessageSubmit = async (event) => {
+    event.preventDefault();
+    const inputForm = event.currentTarget;
+    const { message } = Object.fromEntries(new FormData(inputForm));
+    if (typeof message === 'string' && message.trim().length !== 0) {
+      const { data, error } = await supabase
+        .from('messages')
+        .insert([
+          {
+            profile_id: session.user.id,
+            game_id: game.id,
+            content: message,
+          },
+        ])
+        .select();
+      if (error) {
+        // eslint-disable-next-line no-alert
+        alert(error.message);
+      } else {
+        inputForm.reset();
+        console.log(data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (session) {
+      getFavGame();
+    }
+  }, []);
   return (
     <div>
       <div >
@@ -82,47 +110,56 @@ function GamePage() {
         </div>
 
         <div className={styles.typeContainer}>
-          <div className={styles.typewriter}>
+          <div className={`${styles.typewriter} ${styles.scrollLeft}`}>
             <p >Disponibile per: {game.platforms.map((p) => p.platform.name).join(', ')}</p>
           </div>
         </div>
 
-          <img src={game.background_image} width={300} alt="" />
-          
-          {profile && (
+      <div style={{display: 'flex', filter: 'blur(0.7px) drop-shadow(1px 2px 2px white)'}}>
+
+          <img src={game.background_image} style={{width: '50vw', paddingRight: '20px'}} alt="" />
+          <div>
             <div>
-              {fav.length !== 0 ? (
-                <button
-                  type="button"
-                  
-                  onClick={removeFromFavorites}
-                >
-                  Remove from Favorites
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  
-                  onClick={addToFavorites}
-                >
-                  Add to Favorites
-                </button>
+              <p>Rilasciato il {game.released}</p>
+              <p >Voto medio <b>{game.rating}</b> basato su {game.ratings_count} giudizi</p>
+            </div>         
+          
+              {profile && (
+                <div>
+                  {fav.length !== 0 ? (
+                    <button
+                      type="button"
+                      
+                      onClick={removeFromFavorites}
+                    >
+                      Remove from Favorites
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      
+                      onClick={addToFavorites}
+                    >
+                      Add to Favorites
+                    </button>
+                  )}
+                  <Link
+                    to={`/game/${game.id}/comment`}
+                    style={{
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <button
+                      type="button"
+                      
+                    >
+                      Write a review
+                    </button>
+                  </Link>
+                </div>
               )}
-              <Link
-                to={`/game/${game.id}/comment`}
-                style={{
-                  textDecoration: 'none',
-                }}
-              >
-                <button
-                  type="button"
-                  
-                >
-                  Write a review
-                </button>
-              </Link>
             </div>
-          )}
+          </div>
         </div>
         {profile && (
           <div >
@@ -151,11 +188,7 @@ function GamePage() {
                   className={` contrast`}
                 >
                   Send
-                  <RiMailSendLine
-                    style={{
-                      marginLeft: '5px',
-                    }}
-                  />
+                  
                 </button>
               </form>
             </div>
