@@ -81,15 +81,7 @@ export default function Avatar({ url, size, onUpload }) {
         />
       )}
       <div style={{ width: size }}>
-        <button
-          type="button"
-          style={{
-            marginTop: '10px',
-          }}
-          onClick={uploadAvatar} 
-        >
-          {uploading ? 'Uploading ...' : 'Upload'}
-        </button>
+
         <input
           type="file"
           id="single"

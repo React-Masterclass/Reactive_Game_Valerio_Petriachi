@@ -253,7 +253,8 @@
     -webkit-transform: translateY(60%);
     transform: translateY(60%);
     grid-template-areas: "date category";
-    
+    filter: drop-shadow(white 1px 0mm 1mm);
+    padding: 5px;
     opacity: 0;
     -webkit-transition: all var(--speed) ease;
     transition: all var(--speed) ease;

@@ -4,7 +4,7 @@ import styles from '../Styles/cards.module.css';
 import supabase from '../supabase/client';
 import AppContext from '../contexts/AppContext';
 
-const GameItem = ({ game, onToggleFavorite }) => {
+const GameItem = ({ game, onToggleFavorite, index }) => {
   const { session } = useContext(AppContext);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -62,8 +62,15 @@ const GameItem = ({ game, onToggleFavorite }) => {
     }
   };
 
+  const delay = index * 1000; // 1000 milliseconds = 1 second
+  const cardClassName = `${styles.card} ${styles.buttonGlitch}`;
+  const style = {
+    animation: `shake 2.5s infinite forwards`,
+    animationDelay: `${delay}ms`,
+  };
+
   return (
-    <div className={styles.card} data-effect="zoom">
+    <div className={cardClassName} style={style} data-effect="zoom">
       <figure className={styles.card__image}>
         <img src={game.background_image} alt={game.name} />
       </figure>
@@ -71,7 +78,7 @@ const GameItem = ({ game, onToggleFavorite }) => {
         <Link to={`/game/${game.id}`}>Seleziona questo gioco</Link>
       </p>
       {session && (
-          <Link to="#" onClick={handleToggleFavorite}>
+        <Link to="#" onClick={handleToggleFavorite}>
           {isFavorite ? (
             <img
               src="https://www.creativefabrica.com/wp-content/uploads/2022/03/01/Neon-Light-Luxury-Heart-Graphics-26195678-2-580x387.png"
@@ -86,7 +93,7 @@ const GameItem = ({ game, onToggleFavorite }) => {
             />
           )}
         </Link>
-        )}
+      )}
 
       <div className={styles.card__body}>
         <h4 className={styles.card__name}>
@@ -103,8 +110,6 @@ const GameItem = ({ game, onToggleFavorite }) => {
         <p className={styles.card__date}>
           Rilasciato il {game.released || 'Data non disponibile'}
         </p>
-
-        
       </div>
     </div>
   );

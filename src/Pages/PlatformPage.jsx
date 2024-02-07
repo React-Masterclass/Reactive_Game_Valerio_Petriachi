@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PaginationOutlined from "../components/Pagination";
 import Stack from '@mui/material/Stack';
 import GameItem from "../components/GameItem";
 import styles from '../Styles/font.module.css';
 import Pagination from '@mui/material/Pagination';
-import { getPublishers } from "./Home";
 
 export default function PlatformPage() {
   const { platform, platform_id } = useParams();
@@ -21,27 +19,26 @@ export default function PlatformPage() {
     async function getPlatform() {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}games?key=${import.meta.env.VITE_API_KEY}&page=${pagination}&platforms=${platform_id}`
+          `${import.meta.env.VITE_BASE_URL}games?key=${
+            import.meta.env.VITE_API_KEY
+          }&page=${pagination}&platforms=${platform_id}`
         );
 
-        
+        console.log(response);
 
         if (response.ok) {
           const json = await response.json();
-          console.log('Data from API:', json);
           setPlatformGames(json.results);
 
           console.log(json);
-        } else {
-          setError('Ops, riprova la tua chiamata API');
-        }
+        } 
 
         setLoading(false);
       } catch (error) {
-        setError('Ops, pagina non trovata', error.message);
+        console.log('Ops, pagina non trovata', error.message);
       }
     }
-    getPublishers();
+    getPlatform();
   }, [platform, pagination]);
 
 

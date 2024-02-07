@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
 import supabase from '../supabase/client';
 import AppContext from '../contexts/AppContext';
 import Avatar from '../components/Avatar';
@@ -11,44 +10,31 @@ export default function Settings() {
   const [first_name, setfirstName] = useState(null);
   const [last_name, setLastName] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     let ignore = false;
-
     async function getProfile() {
-      try {
-        setLoading(true);
+      setLoading(true);
+      const { user } = session;
 
-        if (!session || !session.user) {
-          console.error('Session or session.user is undefined');
-          throw new Error('Session or session.user is undefined');
+      const { data, error } = await supabase
+        .from('profiles')
+        .select(`username, first_name, last_name, avatar_url`)
+        .eq('id', user.id)
+        .single();
+
+      if (!ignore) {
+        if (error) {
+          console.warn(error);
+        } else if (data) {
+          setUsername(data.username);
+          setfirstName(data.first_name);
+          setLastName(data.last_name);
+          setAvatarUrl(data.avatar_url);
         }
-
-        const { user } = session;
-
-        const { data, error } = await supabase
-          .from('profiles')
-          .select(`username, first_name, last_name, avatar_url`)
-          .eq('id', user.id)
-          .single();
-
-        if (!ignore) {
-          if (error) {
-            console.warn(error);
-          } else if (data) {
-            setUsername(data.username);
-            setfirstName(data.first_name);
-            setLastName(data.last_name);
-            setAvatarUrl(data.avatar_url);
-          }
-        }
-
-        setLoading(false);
-      } catch (error) {
-        console.error(error.message);
-        setLoading(false);
       }
+
+      setLoading(false);
     }
 
     getProfile();
@@ -76,18 +62,19 @@ export default function Settings() {
     const { error } = await supabase.from('profiles').upsert(updates);
 
     if (error) {
+      // eslint-disable-next-line no-alert
       alert(error.message);
     } else {
       setAvatarUrl(avatarUrl);
-      // Navigate to '/account' after successful update
-      navigate('/account');
     }
-
     setLoading(false);
   }
 
   return (
-    <form onSubmit={(e) => updateProfile(e, avatar_url)} className={`form-widget`}>
+    <form
+      onSubmit={updateProfile}
+      
+    >
       <Avatar
         url={avatar_url}
         size={150}
@@ -154,3 +141,4 @@ export default function Settings() {
     </form>
   );
 }
+

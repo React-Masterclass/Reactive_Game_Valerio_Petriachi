@@ -29,7 +29,7 @@ html {
 }
 
 body {
-	background: linear-gradient(black, darkgreen);
+	background: linear-gradient(#2a4b21, green);
 	overflow-x: hidden;
 }
 

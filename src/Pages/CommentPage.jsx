@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import supabase from '../supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function CommentPage() {
   const game = useLoaderData();
@@ -67,13 +67,22 @@ function CommentPage() {
               placeholder="Write a comment"
             />
           </label>
-          <button type="submit" onClick={() => navigate(`/game/${game.id}`)}>
-            {success ? 'Redirecting...' : 'Publish'}
+          <button  type="submit"  >
+            {success ? 'Commento pubblicato con successo' : 'Publish'}
           </button>
         </form>
+        
+          {success && (
+            <p>
+              <Link to={`/game/${game.id}#comments`}>Vai alla pagina dei commenti</Link>
+            </p>
+          )}
+
       </article>
     </div>
   );
 }
 
 export default CommentPage;
+
+

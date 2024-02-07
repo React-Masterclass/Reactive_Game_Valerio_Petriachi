@@ -68,7 +68,7 @@ function Register() {
             }}
           >
             {({ errors, touched }) => (
-              <Form style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(1px)', }}>
+              <Form style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(0.6px)', }}>
                 <label htmlFor="username">
                   Username
                   <Field

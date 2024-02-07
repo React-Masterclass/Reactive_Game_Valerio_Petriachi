@@ -5,6 +5,27 @@ import supabase from '../supabase/client';
 import styles from '../Styles/font.module.css';
 // import AppContext from "../contexts/AppContext";
 
+
+async function signOut() {
+  const { error } = await supabase.auth.signOut()
+}
+
+
+const handleLoginWithDiscord = async () => {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options: {
+        redirectTo: 'http://localhost:5173/settings',
+      },
+    });
+    console.log(data, error);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 function Login() {
   // const { signIn } = useContext(AppContext);
   const navigate = useNavigate();
@@ -31,7 +52,7 @@ function Login() {
   };
 
   return (
-    <div className="container" style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(1px)', }}>
+    <div className="container" style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(0.6px)', }}>
       <div >
         <div id="LoginEmail" >
         <div className={styles.buzz_wrapper}>
@@ -58,13 +79,17 @@ function Login() {
                 placeholder="almeno6caratteri"
               />
             </label>
-            <button type="submit">
+            <button type="submit" style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}>
               Fai sign In
              
             </button>
           </form>
-        </div>
+          <button  onClick={handleLoginWithDiscord}
+          style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}>
+              Log in con Discord       
+          </button>
 
+        </div>
       </div>
     </div>
   );

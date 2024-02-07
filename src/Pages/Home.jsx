@@ -13,6 +13,7 @@ import Publisher from "../components/Publisher";
 import Platform from "../components/Platform"
 import styles from '../Styles/font.module.css';
 import style from '../Styles/cards.module.css';
+import useDebouceSearch from '../hooks/useDebouceSearch';
 
 export async function getGenres() {
   const response = await fetch(
@@ -63,6 +64,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(1);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouceSearch(search);
   const [state, setState] = useState({
     filtra: false,
   });
@@ -153,7 +155,7 @@ export default function Home() {
 
     fetchData();
 
-  }, [search, pagination]);
+  }, [ pagination, debouncedSearch]);
 
   return (
     <div style={{ width: '100%' }}>
@@ -171,11 +173,11 @@ export default function Home() {
       </div>
 
         <TextField id="outlined-basic" label="Cerca il tuo gioco..." variant="outlined" onChange={handleSearch} style={{width: '100%', filter: 'drop-shadow(0 -1mm 1mm white) blur (0.5px)'}}/>
-        <div style={{ filter: 'drop-shadow(white 0px 0mm 2mm) blur(1px)', }}>
+        <div style={{ filter: 'drop-shadow(white 0px 0mm 4mm) blur(0.9px)', textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',  letterSpacing: '3px' }}>
           {['left'].map((anchor) => {
             return (
               <React.Fragment key={anchor}>
-                <Button onClick={toggleDrawer(anchor, true)} className={style.buttonGlitch}>FILTRA</Button>
+                <Button onClick={toggleDrawer(anchor, true)} className={style.buttonGlitch} style={{textShadow: '2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000', letterSpacing: '2px'}}>SCEGLI I TUOI FILTRI</Button>
                 <SwipeableDrawer
                   anchor={anchor}
                   open={state[anchor]}
@@ -188,8 +190,7 @@ export default function Home() {
             );
           })}
         
-          {search}
-          <Stack spacing={2} style={{alignItems: 'center'}}>
+          <Stack spacing={2} style={{alignItems: 'center', textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000'}}>
             <Pagination
               count={20}
               variant="outlined"

@@ -10,9 +10,7 @@ import AppContext from '../contexts/AppContext';
 
 export async function getSingleGame({ params }) {
   const response = await fetch(
-    `${import.meta.env.VITE_BASE_URL}games/${params.id}?key=${
-      import.meta.env.VITE_API_KEY
-    }`
+    `${import.meta.env.VITE_BASE_URL}games/${params.id}?key=${import.meta.env.VITE_API_KEY}`
   );
   const json = await response.json();
   return json;
@@ -31,10 +29,9 @@ function GamePage() {
       .eq('game_id', game.id)
       .eq('profile_id', session.user.id);
     if (error) {
-      // eslint-disable-next-line no-alert
       alert(error.message);
     } else {
-      setFav(() => [...data]);
+      setFav(data || []);
     }
   };
 
@@ -51,11 +48,14 @@ function GamePage() {
     if (error) {
       alert(error.message);
     } else {
-      getFavGame();
+      setTimeout(() => {
+        getFavGame();
+      }, 500);
     }
   };
-
+  
   const removeFromFavorites = async () => {
+    console.log('Removing from favorites:', game.id, session.user.id);
     const { error } = await supabase
       .from('favorites')
       .delete()
@@ -64,7 +64,10 @@ function GamePage() {
     if (error) {
       alert(error.message);
     } else {
-      getFavGame();
+      console.log('Removed successfully');
+      setTimeout(() => {
+        getFavGame();
+      }, 500);
     }
   };
 
@@ -84,7 +87,6 @@ function GamePage() {
         ])
         .select();
       if (error) {
-        // eslint-disable-next-line no-alert
         alert(error.message);
       } else {
         inputForm.reset();
@@ -97,7 +99,19 @@ function GamePage() {
     if (session) {
       getFavGame();
     }
-  }, []);
+  }, [session, game.id]);
+
+
+  useEffect(() => {
+    if (location.state && location.state.scrollToComments) {
+      const commentsDiv = document.getElementById('comments');
+      if (commentsDiv) {
+        commentsDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location.state]);
+
+
   return (
     <div>
       <div >
@@ -115,13 +129,13 @@ function GamePage() {
           </div>
         </div>
 
-      <div style={{display: 'flex', filter: 'blur(0.7px) drop-shadow(1px 2px 2px white)'}}>
+      <div style={{display: 'flex', filter: 'blur(0.7px) drop-shadow(0px 0px 10px white)'}}>
 
           <img src={game.background_image} style={{width: '50vw', paddingRight: '20px'}} alt="" />
           <div>
             <div>
-              <p>Rilasciato il {game.released}</p>
-              <p >Voto medio <b>{game.rating}</b> basato su {game.ratings_count} giudizi</p>
+              <p style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}>Rilasciato il {game.released}</p>
+              <p style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}>Voto medio <b>{game.rating}</b> basato su {game.ratings_count} giudizi</p>
             </div>         
           
               {profile && (
@@ -129,18 +143,18 @@ function GamePage() {
                   {fav.length !== 0 ? (
                     <button
                       type="button"
-                      
+                      style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}
                       onClick={removeFromFavorites}
                     >
-                      Remove from Favorites
+                      Remove from Favourites
                     </button>
                   ) : (
                     <button
                       type="button"
-                      
+                      style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}
                       onClick={addToFavorites}
                     >
-                      Add to Favorites
+                      Add to Favourites
                     </button>
                   )}
                   <Link
@@ -151,7 +165,7 @@ function GamePage() {
                   >
                     <button
                       type="button"
-                      
+                      style={{textShadow: "2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000"}}
                     >
                       Write a review
                     </button>
@@ -161,9 +175,14 @@ function GamePage() {
             </div>
           </div>
         </div>
+
+        <div id="comments">
+          <Comments game={game} />
+        </div>
+        
         {profile && (
-          <div >
-            <Messages game={game} />
+          <div style={{display: 'flex'}}>
+
             <div >
               <p
                 style={{
@@ -192,10 +211,13 @@ function GamePage() {
                 </button>
               </form>
             </div>
+
+            <Messages game={game} />
+
           </div>
         )}
       </div>
-      <Comments game={game} />
+
     </div>
   );
 }

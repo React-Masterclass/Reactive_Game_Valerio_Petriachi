@@ -52,12 +52,12 @@
   .buzz_wrapper span:nth-child(1){
     color:white;
     margin-left:-2px;
-    -webkit-filter: blur(2px);  
+    -webkit-filter: blur(1.1px);  
   }
   .buzz_wrapper span:nth-child(2){
     color:green;
     margin-left:2px;
-    -webkit-filter: blur(2px);
+    -webkit-filter: blur(1.2px);
   }
   .buzz_wrapper span:nth-child(3){
     color:blue;
